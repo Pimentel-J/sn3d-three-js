@@ -1,0 +1,376 @@
+<!-- Social Network 3D Graphic System and Interaction
+Authors: Filipe Costa | João Pimentel | Tiago Monteiro
+Based on: Thumb Raiser - 2021 JPP
+Credits: JPP -->
+
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Social Network</title>
+    <meta charset="utf-8">
+    <style>
+        * {
+            box-sizing: border-box;
+            -moz-box-sizing: border-box;
+        }
+
+        a {
+            color: #08f;
+        }
+
+        #content {
+            position: absolute;
+            top: 0;
+            width: 100%;
+            z-index: 1;
+            /* padding: 3em 0 0 0; */
+        }
+
+        #c {
+            position: fixed;
+            right: 15px;
+            bottom: 15px;
+            width: 200px;
+            height: 200px;
+        }
+
+        .minimap {
+            position: fixed;
+            right: 10px;
+            bottom: 10px;
+            width: 200px;
+            height: 200px;
+        }
+
+        body {
+            margin: 0;
+        }
+
+        #parent {
+            position: absolute;
+            left: 50.0vw;
+        }
+
+        #views-panel {
+            position: absolute;
+            left: -50.0vmin;
+            top: 1vh;
+            z-index: 1;
+            width: 100.0vmin;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            font-size: 1.5vmin;
+            color: white;
+        }
+
+        #help-panel {
+            position: absolute;
+            left: -50.0vmin;
+            top: 12vh;
+            z-index: 1;
+            width: 100.0vmin;
+            font-family: Arial, sans-serif;
+            font-size: 1.5vmin;
+            color: white;
+        }
+
+        #subwindows-panel {
+            position: absolute;
+            left: -49.0vw;
+            bottom: -81.0vh;
+            z-index: 1;
+            width: 100.0vmin;
+            font-family: Arial, sans-serif;
+            font-size: 1.5vmin;
+            color: white;
+        }
+
+        table {
+            margin-left: auto;
+            margin-right: auto;
+            border: 1px solid black;
+        }
+
+        table.views {
+            background-color: #70707070;
+            text-align: right;
+        }
+
+        table.help {
+            width: 50vmin;
+            background-color: #70707050;
+        }
+
+        table.subwindows {
+            position: absolute;
+            background-color: #70707070;
+            text-align: right;
+        }
+
+        th,
+        td {
+            overflow: hidden;
+            border: 1px solid black;
+        }
+
+        a {
+            color: white;
+        }
+
+        #view,
+        #projection {
+            width: 18ch;
+            font-size: 1.5vmin;
+        }
+
+        #horizontal,
+        #vertical,
+        #distance,
+        #zoom {
+            width: 10ch;
+            font-size: 1.5vmin;
+        }
+
+        #reset,
+        #reset-all {
+            width: 16ch;
+            font-size: 1.5vmin;
+        }
+
+        input:invalid {
+            background-color: pink;
+        }
+
+        canvas {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- <canvas id="c"></canvas> -->
+
+    <div id='parent'>
+        <div id='views-panel'>
+            <table class='views'>
+                <tr>
+                    <td>
+                        <label>View:</label>
+                        <select id='view'>
+                            <option value='top-view'>Top View</option>
+                            <option value='first-person'>First-person</option>
+                        </select>
+                    </td>
+                    <td>
+                        <input type='button' id='reset' value='Reset view'>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div id='help-panel'>
+            <table class='help' id='help-table'>
+                <tr>
+                    <th colspan='2' style='font-size: 3.0vmin'>
+                        Help
+                    </th>
+                </tr>
+                <tr>
+                    <th colspan='2' style='text-align: left'>Select active view</th>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Fixed view</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>First-person view</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Third-person view</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Top view</td>
+                </tr>
+                <tr>
+                    <th colspan='2' style='text-align: left'>Toggle view mode</th>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Single-view mode / multiple-views mode</td>
+                </tr>
+                <tr>
+                    <th colspan='2' style='text-align: left'>Display / hide subwindows</th>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>User interface</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Mini-map</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Help</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Statistics</td>
+                </tr>
+                <tr>
+                    <th colspan='2' style='text-align: left'>Turn on / off lights</th>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Ambient light</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Directional light</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Camera's Spotlight</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Spotlight</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>2nd Spotlight</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Flashlight</td>
+                </tr>
+                <tr>
+                    <th colspan='2' style='text-align: left'>Move character</th>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Walk / run (modifier key)</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Turn left slowly / quickly</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Turn right slowly / quickly</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Walk / run backward</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Walk / run forward</td>
+                </tr>
+                <tr>
+                    <th colspan='2' style='text-align: left'>Emote character</th>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Jump</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Yes</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>No</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Wave</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Punch</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td>Thumbs up</td>
+                </tr>
+                <tr>
+                    <td colspan='2' style='text-align: right'></td>
+                </tr>
+            </table>
+        </div>
+        <div id='subwindows-panel'>
+            <table class='subwindows'>
+                <tr>
+                    <td>
+                        <label>Multiple views:</label>
+                        <input type='checkbox' id='multiple-views'>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>User interface:</label>
+                        <input type='checkbox' id='user-interface'>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Mini-map:</label>
+                        <input type='checkbox' id='mini-map'>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Help:</label>
+                        <input type='checkbox' id='help'>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label>Statistics:</label>
+                        <input type='checkbox' id='statistics'>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+    <script type='module'>
+        import * as THREE from '../three/build/three.module.js';
+        import Orientation from './orientation.js';
+        import SocialNetwork from './social_network.js';
+
+        let socialNetwork;
+
+        function initialize() {
+            // Create the game
+            socialNetwork = new SocialNetwork(
+                { scale: new THREE.Vector3(1.0, 1.0, 1.0) }, // Network parameters
+                {}, // Player parameters
+                {
+                    ambientLight: { visible: true, intensity: 0.15 },
+                    directionalLight: { visible: false, intensity: 0.5, position: new THREE.Vector3(0.0, 8.0, 0.0) },
+                    spotLight: { visible: false, intensity: 0.75, distance: 0.0, angle: Math.PI / 30.0, position: new THREE.Vector3(0.0, 5.0, 0.0) },
+                    spotLight2: { visible: false, intensity: 0.75, distance: 0.0, angle: Math.PI / 30.0, position: new THREE.Vector3(1.35, 5.0, 3.05) },
+                    cameraSpotLight: { visible: true, intensity: 0.7, angle: Math.PI / 2.0 },
+                    flashLight: { color: 0xffffa0, visible: false, intensity: 0.95, distance: 5.0, angle: Math.PI / 8.0 }
+                }, // Lights parameters
+                {}, // Fog parameters
+                { view: 'mini-map', multipleViewsViewport: new THREE.Vector4(0.99, 0.02, 0.3, 0.3), initialOrientation: new Orientation(0.0, -90.0), initialZoom: 0.5 }, // Mini-map view camera parameters
+            );
+        }
+
+        function animate() {
+            socialNetwork.update();
+
+            requestAnimationFrame(animate);
+        }
+
+        initialize();
+        animate();
+    </script>
+</body>
+
+</html>
