@@ -27,11 +27,12 @@ Development of a Social Network 3D graphic system and interaction. The project's
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ## 2. Working Group
-| Authors           |
-|-------------------|
-| Filipe Costa      |
-| João Pimentel     |
-| Tiago Monteiro    |
+
+||
+|----------|
+| Costa    |
+| Monteiro |
+| Pimentel |
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
